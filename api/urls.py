@@ -3,6 +3,7 @@ from users import views as UserViews
 from products import views as ProductViews
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
 from carts import views as CartViews
+from orders import views as OrderViews
 
 
 urlpatterns = [
@@ -24,5 +25,9 @@ urlpatterns = [
     path('carts/',CartViews.CartListView.as_view()),
     path('carts/add/',CartViews.AddToCartView.as_view()),
     path('carts/items/<int:item_id>/',CartViews.ManageCartItemView.as_view()),
+
+    #ORDERS API
+    path('orders/place/',OrderViews.PlaceOrderView.as_view()),
+
 ]
 
