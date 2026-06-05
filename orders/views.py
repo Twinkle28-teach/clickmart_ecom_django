@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from .models import Order,OrderItem
 from .serializers import OrderSerializer
 from rest_framework import status
+from .utils import send_order_notification
 
 # Create your views here.
 class PlaceOrderView(APIView):
@@ -47,7 +48,7 @@ class PlaceOrderView(APIView):
         cart.save()
 
     #send a notification email
-
+        send_order_notification(order)
 
     #send a response to frontend
         serializer = OrderSerializer(order)
