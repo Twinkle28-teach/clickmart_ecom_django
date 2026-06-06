@@ -16,18 +16,22 @@ class Cart(models.Model):
     def subtotal(self):
         subtotal=Decimal("0.00")
         for item in self.items.all():
-            subtotal += item.product.price * item.quantity
+            subtotal += Decimal(str(item.product.price)) * Decimal(str(item.quantity))
         return subtotal
     @property
     def tax_amount(self):
         tax = Decimal("0.00")
         for item in self.items.all():
-            tax += (item.product.price * item.quantity * Decimal(item.product.tax_percentage/ Decimal("100.00")))
-        return tax
+            tax += (Decimal(str(item.product.price))* Decimal(str(item.quantity)) * Decimal(str(item.product.tax_percentage))/ Decimal("100"))
+        return tax.quantize(Decimal("0.01"))
     @property
     def grand_total(self):
-        grand_total = self.subtotal + self.tax_amount
-        return grand_total
+        total = self.subtotal + self.tax_amount
+        print("SUBTOTAL =", self.subtotal)
+        print("TAX =", self.tax_amount)
+        print("TOTAL =", total)
+
+        return total
 
 
 
@@ -41,5 +45,6 @@ class CartItem(models.Model):
         return f"{self.product.name}*{self.quantity}"
     @property
     def total_price(self):
-        total_price = self.product.price* self.quantity
-        return total_price.quantize(Decimal("0.00"))
+        total_price = Decimal(str(self.product.price)) * Decimal(str(self.quantity))
+        
+        return total_price

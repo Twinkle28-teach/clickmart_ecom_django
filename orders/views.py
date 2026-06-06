@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from carts.models import Cart
 from rest_framework.views import APIView
@@ -7,6 +7,7 @@ from .models import Order,OrderItem
 from .serializers import OrderSerializer
 from rest_framework import status
 from .utils import send_order_notification
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 # Create your views here.
 class PlaceOrderView(APIView):
@@ -27,11 +28,11 @@ class PlaceOrderView(APIView):
             tax_amount = cart.tax_amount,
             grand_total = cart.grand_total,
             status = "CONFIRMED",
-            address = shipping_address.get("address"),
-            phone = shipping_address.get("phone"),
-            city = shipping_address.get("city"),
-            state = shipping_address.get("state"),
-            zip_code = shipping_address.get("zip_code"),
+        #     address = shipping_address.get("address"),
+        #     phone = shipping_address.get("phone"),
+        #     city = shipping_address.get("city"),
+        #     state = shipping_address.get("state"),
+        #     zip_code = shipping_address.get("zip_code"),
         )
 
     #create the order items
@@ -53,4 +54,19 @@ class PlaceOrderView(APIView):
     #send a response to frontend
         serializer = OrderSerializer(order)
         return Response(serializer.data,status=status.HTTP_201_CREATED )
-        
+    
+class MyOrdersView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+    
+class OrderDetailView(RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrderSerializer
+
+    def get_object(self):
+        pk = self.kwargs.get('order_id')
+        order = get_object_or_404(Order,pk=pk, user=self.request.user)
+        return order

@@ -22,12 +22,16 @@ urlpatterns = [
     path('products/<int:pk>/',ProductViews.ProductDetailView.as_view()),
 
     #CARTS API
-    path('carts/',CartViews.CartListView.as_view()),
-    path('carts/add/',CartViews.AddToCartView.as_view()),
-    path('carts/items/<int:item_id>/',CartViews.ManageCartItemView.as_view()),
+    path('cart/',CartViews.CartListView.as_view()),
+    path('cart/add/',CartViews.AddToCartView.as_view()),
+    path('cart/items/<int:item_id>/',CartViews.ManageCartItemView.as_view()),
 
     #ORDERS API
     path('orders/place/',OrderViews.PlaceOrderView.as_view()),
+
+    path('orders/',OrderViews.MyOrdersView.as_view()),
+
+    path('orders/<int:order_id>/',OrderViews.OrderDetailView.as_view()),
 
 ]
 
